@@ -11,7 +11,7 @@ async fn main() {
     
     
     let mut content = Vec::new();
-    let mut buffer  = vec![0; 1];
+    let mut buffer  = vec![0; 16];
     loop {
        match socket.read(&mut buffer).await {
             Ok(0) => {
@@ -24,7 +24,7 @@ async fn main() {
                 if String::from_utf8_lossy(&content).chars().last() == Some(';') {
                     content.pop();
                     println!("{} recived! - returning pong!", String::from_utf8_lossy(&content));
-                    socket.write_all(b"pong").await.unwrap();
+                    socket.write_all(format!("pong!\nl: {listener:?}\ns: {socket:?}\nb: {buffer:?}\nc: {content:?}").as_bytes()).await.unwrap();
                     
                     content.clear();
                 }
