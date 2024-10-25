@@ -6,7 +6,7 @@ use std::io;
 async fn main() {
     let mut stream: TcpStream;
     loop {
-        match TcpStream::connect("127.0.0.1:8080").await {
+        match TcpStream::connect("127.0.0.1:8882").await {
             Ok(s) => {
                 println!("Conected!");
                 stream = s;
@@ -27,7 +27,7 @@ async fn main() {
         
         match input.trim() {
             "ping" => {
-                stream.write_all(b"ping").await.unwrap();
+                stream.write_all(b"ping;").await.unwrap();
                 println!("ping sent!");
                 
                 let mut buffer = [0; 1024];
