@@ -10,17 +10,18 @@ async fn main() {
 
         .map(|ip: Option<std::net::SocketAddr>, path: warp::path::FullPath| {
             let path = format!("public{}", path.as_str());
-            println!("[{}] {}: {}", Local::now(), ip.unwrap(), path.as_str());
+            if let Some(ip) = ip {
+                    println!("[{}] {}: {}", Local::now(), ip, path);
+            }
 
             match fs::read(path.as_str()) {
                 Ok(contents) => {
                     warp::reply::with_header(
                         contents,
-                        "content-type", match path {
-                            p if p.ends_with(".css") => "text/css",
-                            p if p.ends_with(".js")  => "application/javascript",
-                            _                        => "text/html",
-                        }
+                        "content-type",
+                             if path.ends_with(".css") {"text/css"}
+                        else if path.ends_with(".js") {"application/javascript"}
+                        else {"text/html"}
                     )
                 },
                 Err(_) => warp::reply::with_header(
